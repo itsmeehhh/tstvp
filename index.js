@@ -1,10 +1,10 @@
-import qs from 'qs';
+import os from 'os';
 import axios from 'axios';
 import express from 'express';
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-
-const cookiesList = [
+const COOKIES = [
   'FCOEC=%5B%5B%5B28%2C%22%5Bnull%2C%5Bnull%2C2%2C%5B1757098560%2C298615000%5D%2C0%5D%5D%22%5D%5D%5D; FCCDCF=%5Bnull%2Cnull%2Cnull%2C%5B%22CQXX-4AQXX-4AEsACBENB7FoAP_gAEPgABAYK1IB_C7EbCFCiDp3IKMEMAhHABBAYsAwAAYBAwAADBIQIAQCgkEYBASAFCACCAAAKASBAAAgCAAAAUAAIAAVAABAAAwAIBAIIAAAgAAAAEAIAAAACIAAEQCAAAAEAEAAkAgAAAIASAAAAAAAAACBAAAAAAAAAAAAAAAABAAAAQAAQAAAAAAAiAAAAAAAABAIAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAABAAAAAAAQR2QD-F2I2EKFEHCuQUYIYBCuACAAxYBgAAwCBgAAGCQgQAgFJIIkCAEAIEAAEAAAQAgCAABQEBAAAIAAAAAqAACAABgAQCAQQIABAAAAgIAAAAAAEQAAIgEAAAAIAIABABAAAAQAkAAAAAAAAAECAAAAAAAAAAAAAAAAAAAAAEABgAAAAAABEAAAAAAAACAQIAAA.cAAAAAAAAAA%22%2C%222~61.89.122.184.196.230.314.442.445.494.550.576.827.1029.1033.1046.1047.1051.1097.1126.1166.1301.1342.1415.1725.1765.1942.1958.1987.2068.2072.2074.2107.2213.2219.2223.2224.2328.2331.2387.2416.2501.2567.2568.2575.2657.2686.2778.2869.2878.2908.2920.2963.3005.3023.3100.3126.3219.3234.3235.3253.3309.3731.6931.8931.13731.15731.33931~dv.%22%2C%22174D77B9-C9DA-48DA-A289-8080EB77C0D8%22%5D%5D; __gads=ID=1fbcebc0b002bea1:T=1757098552:RT=1757275722:S=ALNI_MaqUCXThvezovyN2v6QaEQPl0vOmQ; __gpi=UID=0000126a5d1c0776:T=1757098552:RT=1757275722:S=ALNI_MbzPCyfQLRqX85_QdGZ9_On0FBE3Q; __eoi=ID=16354cffb12a3d7b:T=1757098552:RT=1757275722:S=AA-AfjbkxyKwTtQvWs092Esss7tj; FCNEC=%5B%5B%22AKsRol_zRIuidcHB6adw0TqWdPEyNyIPC9X9Y0YU694GcXZYW5Q9GWnWOeG8cfT-7ZXkgyN48z-BcHs0pJ9jv9rzFjLiMVR6-h0ZsokaJDC7o7M3zP3cBDulG3dRvJTV3zWu7kmPxx9nipaISBzCxRKZqGrr6q4N-A%3D%3D%22%5D%5D; cto_bundle=873pxF9SeFNTYnk4bTZZUmtvQWQyJTJCRGcwdXA0cDUlMkJYcU9qRUJ6aHdCV1VtNnNOY0dMeUVCeHZjZDd3Z0pyU3IxJTJGJTJCN3JBZDlpSkJHMXZIaWFWJTJGOVJlbjRjT0NCeDFhQXUzOXhtSTJUNWxQbWhIMno1dCUyQndUNDNXbG1IZHlkckFUUDh0M0VONGxRczM0NjNVbUtrJTJGb250ZDFYQSUzRCUzRA; _ga_18SJ5XY4FN=GS2.1.s1757275718$o2$g0$t1757275742$j36$l0$h0; _ga=GA1.2.569153863.1757098551; token_acc=7b9f3c4fa8dd9513d20798f13388e04c; PHPSESSID=gejhobhs7kmikvcvor98rl8ssv; CookieBy=freevpn; loginKey=3a5ca1ee35231e78de43f8323c6313da',
   'FCOEC=%5B%5B%5B28%2C%22%5Bnull%2C%5Bnull%2C2%2C%5B1757098560%2C298615000%5D%2C0%5D%5D%22%5D%5D%5D; FCCDCF=%5Bnull%2Cnull%2Cnull%2C%5B%22CQXX-4AQXX-4AEsACBENB7FoAP_gAEPgABAYK1IB_C7EbCFCiDp3IKMEMAhHABBAYsAwAAYBAwAADBIQIAQCgkEYBASAFCACCAAAKASBAAAgCAAAAUAAIAAVAABAAAwAIBAIIAAAgAAAAEAIAAAACIAAEQCAAAAEAEAAkAgAAAIASAAAAAAAAACBAAAAAAAAAAAAAAAABAAAAQAAQAAAAAAAiAAAAAAAABAIAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAABAAAAAAAQR2QD-F2I2EKFEHCuQUYIYBCuACAAxYBgAAwCBgAAGCQgQAgFJIIkCAEAIEAAEAAAQAgCAABQEBAAAIAAAAAqAACAABgAQCAQQIABAAAAgIAAAAAAEQAAIgEAAAAIAIABABAAAAQAkAAAAAAAAAECAAAAAAAAAAAAAAAAAAAAAEABgAAAAAABEAAAAAAAACAQIAAA.cAAAAAAAAAA%22%2C%222~61.89.122.184.196.230.314.442.445.494.550.576.827.1029.1033.1046.1047.1051.1097.1126.1166.1301.1342.1415.1725.1765.1942.1958.1987.2068.2072.2074.2107.2213.2219.2223.2224.2328.2331.2387.2416.2501.2567.2568.2575.2657.2686.2778.2869.2878.2908.2920.2963.3005.3023.3100.3126.3219.3234.3235.3253.3309.3731.6931.8931.13731.15731.33931~dv.%22%2C%22174D77B9-C9DA-48DA-A289-8080EB77C0D8%22%5D%5D; __gads=ID=1fbcebc0b002bea1:T=1757098552:RT=1757275722:S=ALNI_MaqUCXThvezovyN2v6QaEQPl0vOmQ; __gpi=UID=0000126a5d1c0776:T=1757098552:RT=1757275722:S=ALNI_MbzPCyfQLRqX85_QdGZ9_On0FBE3Q; __eoi=ID=16354cffb12a3d7b:T=1757098552:RT=1757275722:S=AA-AfjbkxyKwTtQvWs092Esss7tj; FCNEC=%5B%5B%22AKsRol_zRIuidcHB6adw0TqWdPEyNyIPC9X9Y0YU694GcXZYW5Q9GWnWOeG8cfT-7ZXkgyN48z-BcHs0pJ9jv9rzFjLiMVR6-h0ZsokaJDC7o7M3zP3cBDulG3dRvJTV3zWu7kmPxx9nipaISBzCxRKZqGrr6q4N-A%3D%3D%22%5D%5D; cto_bundle=873pxF9SeFNTYnk4bTZZUmtvQWQyJTJCRGcwdXA0cDUlMkJYcU9qRUJ6aHdCV1VtNnNOY0dMeUVCeHZjZDd3Z0pyU3IxJTJGJTJCN3JBZDlpSkJHMXZIaWFWJTJGOVJlbjRjT0NCeDFhQXUzOXhtSTJUNWxQbWhIMno1dCUyQndUNDNXbG1IZHlkckFUUDh0M0VONGxRczM0NjNVbUtrJTJGb250ZDFYQSUzRCUzRA; _ga_18SJ5XY4FN=GS2.1.s1757275718$o2$g0$t1757275742$j36$l0$h0; _ga=GA1.2.569153863.1757098551; token_acc=7b9f3c4fa8dd9513d20798f13388e04c; PHPSESSID=gejhobhs7kmikvcvor98rl8ssv; CookieBy=freevpn; loginKey=ed22a784f51975309f47b876ce79e6d6',
   'FCOEC=%5B%5B%5B28%2C%22%5Bnull%2C%5Bnull%2C2%2C%5B1757098560%2C298615000%5D%2C0%5D%5D%22%5D%5D%5D; FCCDCF=%5Bnull%2Cnull%2Cnull%2C%5B%22CQXX-4AQXX-4AEsACBENB7FoAP_gAEPgABAYK1IB_C7EbCFCiDp3IKMEMAhHABBAYsAwAAYBAwAADBIQIAQCgkEYBASAFCACCAAAKASBAAAgCAAAAUAAIAAVAABAAAwAIBAIIAAAgAAAAEAIAAAACIAAEQCAAAAEAEAAkAgAAAIASAAAAAAAAACBAAAAAAAAAAAAAAAABAAAAQAAQAAAAAAAiAAAAAAAABAIAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAABAAAAAAAQR2QD-F2I2EKFEHCuQUYIYBCuACAAxYBgAAwCBgAAGCQgQAgFJIIkCAEAIEAAEAAAQAgCAABQEBAAAIAAAAAqAACAABgAQCAQQIABAAAAgIAAAAAAEQAAIgEAAAAIAIABABAAAAQAkAAAAAAAAAECAAAAAAAAAAAAAAAAAAAAAEABgAAAAAABEAAAAAAAACAQIAAA.cAAAAAAAAAA%22%2C%222~61.89.122.184.196.230.314.442.445.494.550.576.827.1029.1033.1046.1047.1051.1097.1126.1166.1301.1342.1415.1725.1765.1942.1958.1987.2068.2072.2074.2107.2213.2219.2223.2224.2328.2331.2387.2416.2501.2567.2568.2575.2657.2686.2778.2869.2878.2908.2920.2963.3005.3023.3100.3126.3219.3234.3235.3253.3309.3731.6931.8931.13731.15731.33931~dv.%22%2C%22174D77B9-C9DA-48DA-A289-8080EB77C0D8%22%5D%5D; __gads=ID=1fbcebc0b002bea1:T=1757098552:RT=1757275722:S=ALNI_MaqUCXThvezovyN2v6QaEQPl0vOmQ; __gpi=UID=0000126a5d1c0776:T=1757098552:RT=1757275722:S=ALNI_MbzPCyfQLRqX85_QdGZ9_On0FBE3Q; __eoi=ID=16354cffb12a3d7b:T=1757098552:RT=1757275722:S=AA-AfjbkxyKwTtQvWs092Esss7tj; FCNEC=%5B%5B%22AKsRol_zRIuidcHB6adw0TqWdPEyNyIPC9X9Y0YU694GcXZYW5Q9GWnWOeG8cfT-7ZXkgyN48z-BcHs0pJ9jv9rzFjLiMVR6-h0ZsokaJDC7o7M3zP3cBDulG3dRvJTV3zWu7kmPxx9nipaISBzCxRKZqGrr6q4N-A%3D%3D%22%5D%5D; cto_bundle=873pxF9SeFNTYnk4bTZZUmtvQWQyJTJCRGcwdXA0cDUlMkJYcU9qRUJ6aHdCV1VtNnNOY0dMeUVCeHZjZDd3Z0pyU3IxJTJGJTJCN3JBZDlpSkJHMXZIaWFWJTJGOVJlbjRjT0NCeDFhQXUzOXhtSTJUNWxQbWhIMno1dCUyQndUNDNXbG1IZHlkckFUUDh0M0VONGxRczM0NjNVbUtrJTJGb250ZDFYQSUzRCUzRA; _ga_18SJ5XY4FN=GS2.1.s1757275718$o2$g0$t1757275742$j36$l0$h0; _ga=GA1.2.569153863.1757098551; token_acc=7b9f3c4fa8dd9513d20798f13388e04c; PHPSESSID=gejhobhs7kmikvcvor98rl8ssv; CookieBy=freevpn; loginKey=cd8af39e6ec04651231dbebc62e0d753',
@@ -14,52 +14,117 @@ const cookiesList = [
   'FCOEC=%5B%5B%5B28%2C%22%5Bnull%2C%5Bnull%2C2%2C%5B1757098560%2C298615000%5D%2C0%5D%5D%22%5D%5D%5D; FCCDCF=%5Bnull%2Cnull%2Cnull%2C%5B%22CQXX-4AQXX-4AEsACBENB7FoAP_gAEPgABAYK1IB_C7EbCFCiDp3IKMEMAhHABBAYsAwAAYBAwAADBIQIAQCgkEYBASAFCACCAAAKASBAAAgCAAAAUAAIAAVAABAAAwAIBAIIAAAgAAAAEAIAAAACIAAEQCAAAAEAEAAkAgAAAIASAAAAAAAAACBAAAAAAAAAAAAAAAABAAAAQAAQAAAAAAAiAAAAAAAABAIAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAABAAAAAAAQR2QD-F2I2EKFEHCuQUYIYBCuACAAxYBgAAwCBgAAGCQgQAgFJIIkCAEAIEAAEAAAQAgCAABQEBAAAIAAAAAqAACAABgAQCAQQIABAAAAgIAAAAAAEQAAIgEAAAAIAIABABAAAAQAkAAAAAAAAAECAAAAAAAAAAAAAAAAAAAAAEABgAAAAAABEAAAAAAAACAQIAAA.cAAAAAAAAAA%22%2C%222~61.89.122.184.196.230.314.442.445.494.550.576.827.1029.1033.1046.1047.1051.1097.1126.1166.1301.1342.1415.1725.1765.1942.1958.1987.2068.2072.2074.2107.2213.2219.2223.2224.2328.2331.2387.2416.2501.2567.2568.2575.2657.2686.2778.2869.2878.2908.2920.2963.3005.3023.3100.3126.3219.3234.3235.3253.3309.3731.6931.8931.13731.15731.33931~dv.%22%2C%22174D77B9-C9DA-48DA-A289-8080EB77C0D8%22%5D%5D; __gads=ID=1fbcebc0b002bea1:T=1757098552:RT=1757275722:S=ALNI_MaqUCXThvezovyN2v6QaEQPl0vOmQ; __gpi=UID=0000126a5d1c0776:T=1757098552:RT=1757275722:S=ALNI_MbzPCyfQLRqX85_QdGZ9_On0FBE3Q; __eoi=ID=16354cffb12a3d7b:T=1757098552:RT=1757275722:S=AA-AfjbkxyKwTtQvWs092Esss7tj; FCNEC=%5B%5B%22AKsRol_zRIuidcHB6adw0TqWdPEyNyIPC9X9Y0YU694GcXZYW5Q9GWnWOeG8cfT-7ZXkgyN48z-BcHs0pJ9jv9rzFjLiMVR6-h0ZsokaJDC7o7M3zP3cBDulG3dRvJTV3zWu7kmPxx9nipaISBzCxRKZqGrr6q4N-A%3D%3D%22%5D%5D; cto_bundle=873pxF9SeFNTYnk4bTZZUmtvQWQyJTJCRGcwdXA0cDUlMkJYcU9qRUJ6aHdCV1VtNnNOY0dMeUVCeHZjZDd3Z0pyU3IxJTJGJTJCN3JBZDlpSkJHMXZIaWFWJTJGOVJlbjRjT0NCeDFhQXUzOXhtSTJUNWxQbWhIMno1dCUyQndUNDNXbG1IZHlkckFUUDh0M0VONGxRczM0NjNVbUtrJTJGb250ZDFYQSUzRCUzRA; _ga_18SJ5XY4FN=GS2.1.s1757275718$o2$g0$t1757275742$j36$l0$h0; _ga=GA1.2.569153863.1757098551; token_acc=7b9f3c4fa8dd9513d20798f13388e04c; PHPSESSID=gejhobhs7kmikvcvor98rl8ssv; CookieBy=freevpn; loginKey=de4826bcf6832d34423139a21380419c'
 ];
 
-const data = qs.stringify({
-  'action': 'claimCoin',
-  'adblock_detected': '0'
+function getClientIp(req) {
+const xff = req.headers['x-forwarded-for'];
+if (xff) {
+return xff.split(',')[0].trim();
+}
+return req.ip || req.connection?.remoteAddress || null;
+}
+
+app.get('/info', (req, res) => {
+const now = new Date();
+const uptimeSeconds = process.uptime();
+
+const info = {
+timestamp: now.toISOString(),
+localDate: now.toString(),
+clientIp: getClientIp(req),
+method: req.method,
+url: req.originalUrl,
+protocol: req.protocol,
+host: req.get('host'),
+userAgent: req.get('user-agent') || null,
+headers: req.headers,
+query: req.query,
+process: {
+pid: process.pid,
+uptimeSeconds,
+memory: process.memoryUsage(),
+nodeVersion: process.version,
+cwd: process.cwd()
+},
+os: {
+platform: os.platform(),
+release: os.release(),
+hostname: os.hostname(),
+arch: os.arch(),
+cpus: os.cpus().length,
+totalMemory: os.totalmem(),
+freeMemory: os.freemem()
+}
+};
+
+if (req.accepts('html')) {
+const html = `       <!doctype html>       <html>       <head><meta charset="utf-8"><title>/info</title>         <style>
+          body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:20px}
+          pre{background:#f6f6f6;padding:12px;border-radius:6px;overflow:auto}
+          table{border-collapse:collapse;margin-top:8px}
+          td,th{padding:6px 10px;border:1px solid #ddd;vertical-align:top}         </style>       </head>       <body>         <h1>/info</h1>         <p><strong>Time:</strong> ${info.localDate}</p>         <p><strong>Client IP:</strong> ${info.clientIp}</p>         <p><strong>Method & URL:</strong> ${info.method} ${info.url}</p>         <h2>Query</h2>         <pre>${JSON.stringify(info.query, null, 2)}</pre>         <h2>Process</h2>         <pre>${JSON.stringify(info.process, null, 2)}</pre>         <h2>OS</h2>         <pre>${JSON.stringify(info.os, null, 2)}</pre>         <h2>Headers</h2>         <pre>${JSON.stringify(info.headers, null, 2)}</pre>       </body>       </html>
+    `;
+res.type('html').send(html);
+return;
+}
+
+res.json(info);
 });
 
-async function claimCoin(cookie) {
-  const config = {
-    method: 'POST',
-    url: 'https://www.freevpn.us/core.json',
-    headers: {
-      'User-Agent': 'Mozilla/5.0 (Linux; Android 13; RMX3430 Build/SP1A.210812.016) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.7339.207 Mobile Safari/537.36',
-      'Accept-Encoding': 'gzip, deflate, br, zstd',
-      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-      'sec-ch-ua-platform': '"Android"',
-      'x-requested-with': 'XMLHttpRequest',
-      'sec-ch-ua': '"Chromium";v="140", "Not=A?Brand";v="24", "Android WebView";v="140"',
-      'sec-ch-ua-mobile': '?1',
-      'origin': 'https://www.freevpn.us',
-      'sec-fetch-site': 'same-origin',
-      'sec-fetch-mode': 'cors',
-      'sec-fetch-dest': 'empty',
-      'referer': 'https://www.freevpn.us/',
-      'accept-language': 'ar-MA,ar;q=0.9,en-MA;q=0.8,en-US;q=0.7,en;q=0.6',
-      'priority': 'u=1, i',
-      'Cookie': cookie
-    },
-    data,
-    timeout: 30000
-  };
+app.get('/', (req, res) => {
+res.redirect('/info');
+});
 
-  try {
-    const res = await axios.request(config);
-    console.log(new Date().toISOString(), '✅ DONE', cookie.slice(0, 16), res.data);
-  } catch (err) {
-    console.log(new Date().toISOString(), '⚠️ ERROR', cookie.slice(0, 16), err.message);
-  }
+app.get('/health', (req, res) => {
+res.json({ status: 'ok', uptimeSeconds: process.uptime() });
+});
+
+app.listen(PORT, () => {
+console.log(`Info app listening on http://localhost:${PORT} — GET /info`);
+});
+
+const defaultHeaders = {
+"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
+"Accept-Encoding": "gzip, deflate, br, zstd",
+"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+"sec-ch-ua-platform": ""Android"",
+"x-requested-with": "XMLHttpRequest",
+"sec-ch-ua": ""Not;A=Brand";v="99", "Android WebView";v="139", "Chromium";v="139"",
+"sec-ch-ua-mobile": "?1",
+"origin": "[https://www.freevpn.us](https://www.freevpn.us)",
+"sec-fetch-site": "same-origin",
+"sec-fetch-mode": "cors",
+"sec-fetch-dest": "empty",
+"referer": "[https://www.freevpn.us/](https://www.freevpn.us/)",
+"accept-language": "ar-MA,ar;q=0.9,en-US;q=0.8,en;q=0.7",
+"priority": "u=1, i"
+};
+
+const formData = new URLSearchParams({
+action: "claimCoin",
+adblock_detected: "0"
+});
+
+async function claimForCookie(cookie, idx) {
+const headers = { ...defaultHeaders, Cookie: cookie };
+try {
+const res = await axios.post("[https://www.freevpn.us/core.json](https://www.freevpn.us/core.json)", formData, { headers, timeout: 20000 });
+const masked = cookie.length > 12 ? cookie.slice(0, 6) + '...' + cookie.slice(-6) : cookie;
+console.log(`✅ [${idx}] Cookie ${masked} claimed at:`, new Date().toLocaleString());
+console.log(`Response [${idx}]:`, res.data);
+} catch (err) {
+const status = err.response?.status || 'NO_STATUS';
+const data = err.response?.data || err.message;
+const masked = cookie.length > 12 ? cookie.slice(0, 6) + '...' + cookie.slice(-6) : cookie;
+console.error(`❌ [${idx}] Error claiming for cookie ${masked}:`, status, data);
+}
 }
 
-function runAll() {
-  console.log(new Date().toISOString(), '🚀 START ALL');
-  cookiesList.forEach(cookie => claimCoin(cookie));
+async function claimCoins() {
+if (!Array.isArray(COOKIES) || COOKIES.length === 0) {
+console.log('No cookies configured to claim.');
+return;
+}
+await Promise.all(COOKIES.map((c, i) => claimForCookie(c, i)));
 }
 
-runAll();
-setInterval(runAll, 25 * 60 * 60 * 1000);
-
-app.get('/', (req, res) => res.send('ok'));
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => console.log(`🌐 Server running on port ${PORT}`));
+claimCoins();
+setInterval(claimCoins, 24 * 60 * 60 * 1000 + 30 * 60 * 1000);
